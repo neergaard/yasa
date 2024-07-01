@@ -16,7 +16,7 @@ VERSION = "0.6.4"
 PACKAGE_DATA = {"yasa.data.icons": ["*.svg"]}
 
 INSTALL_REQUIRES = [
-    "numpy>=1.18.1",
+    "numpy",
     "scipy",
     "pandas",
     "matplotlib",
@@ -31,7 +31,6 @@ INSTALL_REQUIRES = [
     "lspopt",
     "ipywidgets",
     "joblib",
-    "lightgbm",
 ]
 
 PACKAGES = [
