@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import pandas as pd
 from scipy import signal
-from scipy.integrate import simps
+from scipy.integrate import simpson as simps
 from scipy.interpolate import RectBivariateSpline
 from .io import set_log_level
 
@@ -139,9 +139,7 @@ def bandpower(
     if hypno is None:
         # Calculate the PSD over the whole data
         freqs, psd = signal.welch(data, sf, nperseg=win, **kwargs_welch)
-        return bandpower_from_psd(psd, freqs, ch_names, bands=bands, relative=relative).set_index(
-            "Chan"
-        )
+        return bandpower_from_psd(psd, freqs, ch_names, bands=bands, relative=relative).set_index("Chan")
     else:
         # Per each sleep stage defined in ``include``.
         hypno = np.asarray(hypno)
@@ -151,9 +149,7 @@ def bandpower(
         assert hypno.size == npts, "Hypno must have same size as data.shape[1]"
         assert include.size >= 1, "`include` must have at least one element."
         assert hypno.dtype.kind == include.dtype.kind, "hypno and include must have same dtype"
-        assert np.in1d(
-            hypno, include
-        ).any(), "None of the stages specified in `include` are present in hypno."
+        assert np.in1d(hypno, include).any(), "None of the stages specified in `include` are present in hypno."
         # Initialize empty dataframe and loop over stages
         df_bp = pd.DataFrame([])
         for stage in include:
@@ -613,9 +609,7 @@ def irasa(
             y_log = np.log(y)
             # Note that here we define bounds for the slope but not for the
             # intercept.
-            popt, pcov = curve_fit(
-                func, freqs, y_log, p0=(2, -1), bounds=((-np.inf, -10), (np.inf, 2))
-            )
+            popt, pcov = curve_fit(func, freqs, y_log, p0=(2, -1), bounds=((-np.inf, -10), (np.inf, 2)))
             intercepts.append(popt[0])
             slopes.append(popt[1])
             # Calculate R^2: https://stackoverflow.com/q/19189362/10581531
@@ -691,9 +685,7 @@ def stft_power(data, sf, window=2, step=0.2, band=(1, 30), interp=True, norm=Fal
     noverlap = int(nperseg - (step * sf))
 
     # Compute STFT and remove the last epoch
-    f, t, Sxx = signal.stft(
-        data, sf, nperseg=nperseg, noverlap=noverlap, detrend=False, padded=True
-    )
+    f, t, Sxx = signal.stft(data, sf, nperseg=nperseg, noverlap=noverlap, detrend=False, padded=True)
 
     # Let's keep only the frequency of interest
     if band is not None:
